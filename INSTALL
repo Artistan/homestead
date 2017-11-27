@@ -1,0 +1,23 @@
+#!/bin/bash
+# you already checked out this repo? -- if not clone into temp directory
+if [ -d .git ]; then
+	echo "installing from checked out repo";
+elif [ -z "$1" ]; then
+	echo "installing from specified repo $1";
+	git clone "$1" cloned-repo;
+else
+	echo "installing :: checkeding out repo";
+	git clone https://github.com/Artistan/homestead.git cloned-repo
+fi;
+# move clone into current directory
+if [ -d cloned-rep ]; then
+	mv cloned-repo/* ./
+	rm -rf cloned-repo
+fi;
+
+# https://gist.github.com/Artistan/75caa2ea612411d8ca0588e1677f1684
+vagrant box add laravel/homestead
+bash init.sh
+vagrant plugin install vagrant-bindfs
+vagrant up
+

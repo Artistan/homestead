@@ -4,9 +4,9 @@
 vagrant box update
 git fetch upstream
 git merge upstream/master
-git commit -a
 git push origin master
 
 composer update
 
-
+# update after composer
+git commit -a
