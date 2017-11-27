@@ -8,13 +8,16 @@ if [ -f 'aftermath' ]; then
         echo "you have already been through the aftermath"
         sudo apt-get update;
         sudo systemctl restart elasticsearch
+        echo "update complete"
 else
 	# Install oh-my-zsh
         apt-get install zsh jq -y
         git clone git://github.com/robbyrussell/oh-my-zsh.git /home/vagrant/.oh-my-zsh
         git clone https://github.com/Artistan/powerlevel9k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel9k
         cd /home/vagrant/.oh-my-zsh/custom/themes/powerlevel9k; git checkout color_names;
-        sudo cp /vagrant/.zshrc /home/vagrant/.zshrc
+        sudo cp /vagrant/resources/.zshrc /home/vagrant/.zshrc
+        sudo cp /vagrant/resources/.my.cnf /home/vagrant/.my.cnf
+        # change the default shell for vagrant
         sudo chsh -s $(which zsh) vagrant
 
         # setup xdebug
@@ -47,6 +50,10 @@ else
         systemctl start memcached.service
         systemctl enable memcached.service
         systemctl status memcached.service
+
+        # own it.
+        chown -R vagrant:vagrant /home/vagrant
+        echo "install complete"
 fi
 sudo apt-get upgrade
 echo "upgrade complete"
