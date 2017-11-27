@@ -8,9 +8,8 @@ if [ -f 'aftermath' ]; then
         echo "you have already been through the aftermath"
         sudo apt-get update;
         sudo systemctl restart elasticsearch
-        echo "updated your shit"
 else
-        # Install oh-my-zsh
+	# Install oh-my-zsh
         apt-get install zsh jq -y
         git clone git://github.com/robbyrussell/oh-my-zsh.git /home/vagrant/.oh-my-zsh
         git clone https://github.com/Artistan/powerlevel9k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel9k
@@ -49,3 +48,6 @@ else
         systemctl enable memcached.service
         systemctl status memcached.service
 fi
+sudo apt-get upgrade
+echo "upgrade complete"
+
