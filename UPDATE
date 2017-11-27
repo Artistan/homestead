@@ -7,6 +7,6 @@ git merge upstream/master
 git commit -a
 git push origin master
 
-composer updatee
+composer update
 
 
