@@ -13,7 +13,7 @@ else
         # Install oh-my-zsh
         apt-get install zsh jq -y
         git clone git://github.com/robbyrussell/oh-my-zsh.git /home/vagrant/.oh-my-zsh
-        git clone https://github.com/bhilburn/powerlevel9k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel9k
+        git clone https://github.com/Artistan/powerlevel9k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel9k
         sudo cp /vagrant/.zshrc /home/vagrant/.zshrc
         sudo chsh -s $(which zsh) vagrant
 
