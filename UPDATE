@@ -1,0 +1,12 @@
+#!/bin/bash
+
+#  https://laravel.com/docs/5.4/homestead#updating-homestead
+vagrant box update
+git fetch upstream
+git merge upstream/master
+git commit -a
+git push origin master
+
+composer updatee
+
+
