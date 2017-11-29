@@ -11,9 +11,16 @@ class Homestead
 
         # Configure The Box
         config.vm.define settings["name"] ||= "homestead-7"
-        config.vm.box = settings["box"] ||= "laravel/homestead"
-        config.vm.box_version = settings["version"] ||= ">= 4.0.0"
-        config.vm.hostname = settings["hostname"] ||= "homestead"
+        config.vm.hostname = settings["hostname"] ||= "homestead"   
+        config.vm.box = settings["box"] ||= "laravel/homestead" 
+
+        # box url
+        if settings.has_key?("box_url")
+            config.vm.box_url = settings["box_url"]
+        else
+            config.vm.box_version = settings["version"] ||= ">= 4.0.0"
+        end
+
 
         # Configure A Private Network IP
         if settings["ip"] != "autonetwork"
@@ -153,7 +160,7 @@ class Homestead
                     mount_opts = []
 
                     if (folder["type"] == "nfs")
-                        mount_opts = folder["mount_options"] ? folder["mount_options"] : ['actimeo=1', 'nolock']
+                         mount_opts = folder["mount_options"] ? folder["mount_options"] : ['actimeo=1', 'nolock']
                     elsif (folder["type"] == "smb")
                         mount_opts = folder["mount_options"] ? folder["mount_options"] : ['vers=3.02', 'mfsymlinks']
                     end
@@ -168,7 +175,7 @@ class Homestead
 
                     # Bindfs support to fix shared folder (NFS) permission issue on Mac
                     if Vagrant.has_plugin?("vagrant-bindfs")
-                        config.bindfs.bind_folder folder["to"], folder["to"]
+                         config.bindfs.bind_folder folder["to"], folder["to"]
                     end
                 else
                     config.vm.provision "shell" do |s|
@@ -239,7 +246,7 @@ class Homestead
             if has_cron
                 config.vm.provision "shell" do |s|
                 	s.path = scriptDir + "/cron-restart.sh"
-		end
+		        end
             end
         end
 
