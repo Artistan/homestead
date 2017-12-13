@@ -242,12 +242,6 @@ class Homestead
                     end
                 end
             end
-            # Restart cron daemon
-            if has_cron
-                config.vm.provision "shell" do |s|
-                	s.path = scriptDir + "/cron-restart.sh"
-		        end
-            end
         end
 
         # Configure All Of The Server Environment Variables
