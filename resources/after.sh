@@ -22,6 +22,10 @@ do
     if [[ $? -eq 1 ]]
     then
         xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/Code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/Code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
-        printf "$xdebug" | tee -a "/etc/php/$version/mods-available/xdebug.ini"
+        sudo printf "$xdebug" | sudo tee -a "/etc/php/$version/mods-available/xdebug.ini"
+        sudo cp -f "/etc/php/$version/mods-available/xdebug.ini" "/etc/php/$version/mods-available/cli-xdebug.ini"
+        # try to autostart
+        sed "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1" /etc/php/7.1/mods-available/cli-xdebug.ini
+        sudo ln -s /etc/php/7.1/mods-available/cli-xdebug.ini /etc/php/7.1/mods-available/20-xdebug.ini
     fi
 done
