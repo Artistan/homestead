@@ -35,6 +35,9 @@ do
         # try to autostart
         sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" /etc/php/7.1/mods-available/cli-xdebug.ini
         sudo ln -s /etc/php/7.1/mods-available/cli-xdebug.ini /etc/php/7.1/mods-available/20-xdebug.ini
+        # could use manual install, but why?
+        # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
+        # section 8. -d command...., still need xdebug enabled via php.ini!!!
     fi
 done
 
