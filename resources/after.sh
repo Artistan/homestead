@@ -11,6 +11,14 @@ then
     printf "\nsource ~/.profile\n" | tee -a /home/vagrant/.zshrc
 fi
 
+# add profile source if not exists.
+(grep -q 'PHP_IDE_CONFIG' /home/vagrant/.zshrc)
+if [[ $? -eq 1 ]]
+then
+    printf "\nexport PHP_IDE_CONFIG=\"serverName=SomeName\"\n" | tee -a /home/vagrant/.zshrc
+fi
+
+
 ## declare an array variable
 declare -a versions_list=("5.6" "7.0" "7.1")
 
@@ -41,3 +49,11 @@ done
 
 ## validate your configuration
 # https://confluence.jetbrains.com/display/PhpStorm/Validating+Your+Debugging+Configuration
+
+## server config in Homestead.yaml - so phpstorm knows which server it is dealing with.
+# https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm#DebuggingPHPCLIscriptswithPhpStorm-2.StarttheScriptwithDebuggerOptions
+# variables:
+#     - key: APP_ENV
+#       value: number2
+#     - key: PHP_IDE_CONFIG
+#       value: serverName=number2

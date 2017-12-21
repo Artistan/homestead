@@ -6,6 +6,12 @@ provider: virtualbox
 
 authorize: ~/.ssh/id_rsa.pub
 
+variables:
+    - key: APP_ENV
+      value: dev
+    - key: PHP_IDE_CONFIG
+      value: serverName=homestead
+
 keys:
     - ~/.ssh/id_rsa
 
