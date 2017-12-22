@@ -24,6 +24,7 @@ keys:
 folders:
     - map: ~/code
       to: /home/vagrant/code
+      type: "nfs"
 
 sites:
     - map: homestead.test
