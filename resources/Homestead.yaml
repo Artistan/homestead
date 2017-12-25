@@ -1,4 +1,6 @@
 ---
+name: "Homestead"
+hostname: "homestead"
 ip: "192.168.10.10"
 memory: 2048
 cpus: 1
@@ -6,16 +8,30 @@ provider: virtualbox
 
 authorize: ~/.ssh/id_rsa.pub
 
+variables:
+    - key: APP_ENV
+      value: dev
+    - key: PHP_IDE_CONFIG
+      value: serverName=homestead
+#  https://xdebug.org/docs/remote
+#    - key: XDEBUG_CONFIG
+#      value: "profiler_enable=1"
+
+
 keys:
     - ~/.ssh/id_rsa
 
 folders:
     - map: ~/code
       to: /home/vagrant/code
+      type: "nfs"
 
 sites:
     - map: homestead.test
       to: /home/vagrant/code/public
+      schedule: true
+      php: "7.1"
+# php 7.1 so we can use xdebug
 
 databases:
     - homestead

@@ -1,3 +1,4 @@
+*/*.box
 /vendor
 /.vagrant
 phpunit.xml
