@@ -217,10 +217,15 @@ class Homestead
                         params += " )"
                     end
                     s.path = scriptDir + "/serve-#{type}.sh"
-                    s.args = [site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443", site["php"] ||= "7.2", params ||= ""]
-                    if site.include? 'zray'
+                    s.args = [site["map"], site["to"], site["port"] ||= "80", site["ssl"] ||= "443", site["php"] ||= "7.2", params ||= "", site["zray"] ||= "false"]
+
+                    if site["zray"] == 'true'
                         config.vm.provision "shell" do |s|
-                            s.inline = "ln -s /opt/zray/gui/public " + site["to"] + "/ZendServer"
+                            s.inline = "ln -sf /opt/zray/gui/public " + site["to"] + "/ZendServer"
+                        end
+                    else
+                        config.vm.provision "shell" do |s|
+                            s.inline = "rm -rf " + site["to"] + "/ZendServer"
                         end
                     end
                 end
@@ -367,7 +372,7 @@ class Homestead
         # Update Composer On Every Provision
         config.vm.provision "shell" do |s|
             s.name = "Update Composer"
-            s.inline = "sudo /usr/local/bin/composer self-update && sudo chown -R vagrant:vagrant /home/vagrant/.composer/"
+            s.inline = "sudo /usr/local/bin/composer self-update --no-progress && sudo chown -R vagrant:vagrant /home/vagrant/.composer/"
             s.privileged = false
         end
 
