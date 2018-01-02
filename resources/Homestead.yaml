@@ -6,17 +6,16 @@ memory: 2048
 cpus: 1
 provider: virtualbox
 
-authorize: ~/.ssh/id_rsa.pub
-
 variables:
     - key: APP_ENV
-      value: dev
+      value: local
     - key: PHP_IDE_CONFIG
       value: serverName=homestead
 #  https://xdebug.org/docs/remote
 #    - key: XDEBUG_CONFIG
 #      value: "profiler_enable=1"
 
+authorize: ~/.ssh/id_rsa.pub
 
 keys:
     - ~/.ssh/id_rsa
