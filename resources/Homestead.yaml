@@ -10,7 +10,7 @@ variables:
     - key: APP_ENV
       value: local
     - key: PHP_IDE_CONFIG
-      value: serverName=homestead
+      value: "serverName=homestead"
 #  https://xdebug.org/docs/remote
 #    - key: XDEBUG_CONFIG
 #      value: "profiler_enable=1"
