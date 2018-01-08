@@ -7,5 +7,6 @@ phpunit.xml
 /after.sh
 /aliases
 .idea
-ca.homestead.crt
-system-*
+ca.*.crt
+/system-*
+/.created
