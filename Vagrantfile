@@ -46,6 +46,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 end
 
+# https://superuser.com/questions/701735/run-script-on-host-machine-during-vagrant-up
 if File.exist? systemAfterPath then
     system(systemAfterPath)
 end

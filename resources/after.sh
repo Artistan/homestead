@@ -61,6 +61,7 @@ done
 #     - key: PHP_IDE_CONFIG
 #       value: serverName=number2
 
+# https://apple.stackexchange.com/questions/80623/import-certificates-into-the-system-keychain-via-the-command-line
 # copy the cert to your vagrant directory so you cant trust it...
 sudo cp -f /etc/nginx/ssl/ca.homestead.crt /vagrant/ca.homestead.crt
 echo "add ca.homestead.crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
