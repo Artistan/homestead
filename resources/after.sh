@@ -18,6 +18,10 @@ then
     printf "\nexport PHP_IDE_CONFIG=\"serverName=SomeName\"\n" | tee -a /home/vagrant/.zshrc
 fi
 
+if [[ ! -e /usr/local/bin/php ]]
+then
+	sudo ln -s /usr/bin/php /usr/local/bin/php
+fi
 
 ## declare an array variable
 declare -a versions_list=("5.6" "7.0" "7.1")
