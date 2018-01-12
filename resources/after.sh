@@ -23,6 +23,9 @@ then
 	sudo ln -s /usr/bin/php /usr/local/bin/php
 fi
 
+# memcache -- old, for billing
+apt-get install php-memcache -y
+
 ## declare an array variable
 declare -a versions_list=("5.6" "7.0" "7.1")
 
