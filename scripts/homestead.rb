@@ -192,6 +192,14 @@ class Homestead
             s.path = scriptDir + "/clear-nginx.sh"
         end
 
+        # Temporary fix to disable Z-Ray by default to be fixed in future base box update
+        config.vm.provision "shell" do |s|
+            s.inline = "rm -rf /usr/lib/php/20170718/zray.so"
+        end
+        config.vm.provision "shell" do |s|
+            s.inline = "rm -rf /etc/php/7.2/fpm/conf.d/zray.ini"
+        end
+
         if settings.include? 'sites'
             has_cron = false
             settings["sites"].each do |site|
@@ -224,6 +232,12 @@ class Homestead
                     if site["zray"] == 'true'
                         config.vm.provision "shell" do |s|
                             s.inline = "ln -sf /opt/zray/gui/public " + site["to"] + "/ZendServer"
+                        end
+                        config.vm.provision "shell" do |s|
+                            s.inline = "ln -sf /opt/zray/lib/zray.so /usr/lib/php/20170718/zray.so"
+                        end
+                        config.vm.provision "shell" do |s|
+                            s.inline = "ln -sf /opt/zray/zray.ini /etc/php/7.2/fpm/conf.d/zray.ini"
                         end
                     else
                         config.vm.provision "shell" do |s|
