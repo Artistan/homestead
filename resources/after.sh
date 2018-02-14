@@ -72,5 +72,5 @@ sudo sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
 
 # https://apple.stackexchange.com/questions/80623/import-certificates-into-the-system-keychain-via-the-command-line
 # copy the cert to your vagrant directory so you cant trust it...
-sudo cp -f "/etc/nginx/ssl/ca.homestead.$(hostname).crt" "/vagrant/ca.$(hostname).crt"
+sudo cp -f "/etc/nginx/ssl/ca.homestead.$(hostname).crt" "/vagrant/ca.homestead.$(hostname).crt"
 echo "add ca.homestead.$(hostname).crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
