@@ -47,6 +47,8 @@ do
         # section 8. -d command...., still need xdebug enabled via php.ini!!!
     fi
 done
+#nginx gzip...
+sudo sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
 
 ## cli execute with debug examples.
 # https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm
@@ -70,5 +72,5 @@ done
 
 # https://apple.stackexchange.com/questions/80623/import-certificates-into-the-system-keychain-via-the-command-line
 # copy the cert to your vagrant directory so you cant trust it...
-sudo cp -f "/etc/nginx/ssl/ca.$(hostname).crt" "/vagrant/ca.$(hostname).crt"
-echo "add ca.$(hostname).crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
+sudo cp -f "/etc/nginx/ssl/ca.homestead.$(hostname).crt" "/vagrant/ca.$(hostname).crt"
+echo "add ca.homestead.$(hostname).crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
