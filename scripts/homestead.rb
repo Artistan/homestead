@@ -11,22 +11,14 @@ class Homestead
 
         # Configure The Box
         config.vm.define settings["name"] ||= "homestead-7"
-<<<<<<< HEAD
-        config.vm.hostname = settings["hostname"] ||= "homestead"   
-        config.vm.box = settings["box"] ||= "laravel/homestead" 
+        config.vm.box = settings["box"] ||= "laravel/homestead"
+        config.vm.box_version = settings["version"] ||= ">= 5.2.0"
+        config.vm.hostname = settings["hostname"] ||= "homestead"
 
         # box url
         if settings.has_key?("box_url")
             config.vm.box_url = settings["box_url"]
-        else
-            config.vm.box_version = settings["version"] ||= ">= 4.0.0"
         end
-
-=======
-        config.vm.box = settings["box"] ||= "laravel/homestead"
-        config.vm.box_version = settings["version"] ||= ">= 5.2.0"
-        config.vm.hostname = settings["hostname"] ||= "homestead"
->>>>>>> upstream/master
 
         # Configure A Private Network IP
         if settings["ip"] != "autonetwork"
