@@ -10,3 +10,4 @@ phpunit.xml
 ca.*.crt
 /system-*
 /.created
+*.sql

@@ -4,6 +4,12 @@
 # add any commands you wish to this file and they will
 # be run after the Homestead machine is provisioned.
 
+# oh-my-zsh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+git config --add oh-my-zsh.hide-status 1
+sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sudo git config --add oh-my-zsh.hide-status 1
+
 # add profile source if not exists.
 (grep -q '.profile' /home/vagrant/.zshrc)
 if [[ $? -eq 1 ]]
