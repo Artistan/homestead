@@ -30,13 +30,13 @@ then
 fi
 
 # memcache -- old, for billing
-apt-get install php-memcache -y
+sudo apt-get install php-memcache -y
 
 # ldap authentication
-apt-get install php5.6-ldap
-apt-get install php7.0-ldap
-apt-get install php7.1-ldap
-apt-get install php7.2-ldap
+sudo apt-get install php5.6-ldap
+sudo apt-get install php7.0-ldap
+sudo apt-get install php7.1-ldap
+sudo apt-get install php7.2-ldap
 
 ## declare an array variable
 declare -a versions_list=("5.6" "7.0" "7.1")
