@@ -12,10 +12,6 @@ then
 
     pluginsData="$(vagrant plugin list)"
 
-    $(echo "$pluginsData"|grep -q triggers)
-    if [[ $? -eq 1  ]]; then
-        vagrant plugin install vagrant-triggers
-    fi
     $(echo "$pluginsData"|grep -q host-shell)
     if [[ $? -eq 1  ]]; then
         vagrant plugin install vagrant-host-shell
