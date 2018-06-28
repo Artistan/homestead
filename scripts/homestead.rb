@@ -366,6 +366,14 @@ class Homestead
             end
         end
 
+        # Install InfluxDB if Necessary
+        if settings.has_key?("influxdb") && settings["influxdb"]
+            config.vm.provision "shell" do |s|
+                s.path = scriptDir + "/install-influxdb.sh"
+            end
+        end
+       
+
         # Configure All Of The Configured Databases
         if settings.has_key?("databases")
             settings["databases"].each do |db|
@@ -396,6 +404,29 @@ class Homestead
                         s.args = [db]
                     end
                 end
+
+                if settings.has_key?("influxdb") && settings["influxdb"]
+                    config.vm.provision "shell" do |s|
+                        s.name = "Creating InfluxDB Database: " + db
+                        s.path = scriptDir + "/create-influxdb.sh"
+                        s.args = [db]
+                    end
+                end
+
+            end
+        end
+
+        # Install grafana if Necessary
+        if settings.has_key?("grafana") && settings["grafana"]
+            config.vm.provision "shell" do |s|
+                s.path = scriptDir + "/install-grafana.sh"
+            end
+        end
+
+        # Install chronograf if Necessary
+        if settings.has_key?("chronograf") && settings["chronograf"]
+            config.vm.provision "shell" do |s|
+                s.path = scriptDir + "/install-chronograf.sh"
             end
         end
 
@@ -424,6 +455,30 @@ class Homestead
             s.path = scriptDir + "/create-ngrok.sh"
             s.args = [settings["ip"]]
             s.privileged = false
+        end
+
+        if settings.has_key?("backup") && settings["backup"] && (Vagrant::VERSION >= '2.1.0' || Vagrant.has_plugin('vagrant-triggers'))
+            dirPrefix = '/vagrant/'
+            settings["databases"].each do |database|
+                Homestead.backupMysql(database, "#{dirPrefix}/mysql_backup", config)
+                Homestead.backupPostgres(database, "#{dirPrefix}/postgres_backup", config)
+            end
+        end
+    end
+
+    def Homestead.backupMysql(database, dir, config)
+        now = Time.now.strftime("%Y%m%d%H%M")
+        config.trigger.before :destroy do |trigger|
+            trigger.warn = "Backing up mysql database #{database}..."
+            trigger.run_remote = {"inline": "mkdir -p #{dir} && mysqldump #{database} > #{dir}/#{database}-#{now}.sql"}
+        end
+    end
+
+    def Homestead.backupPostgres(database, dir, config)
+        now = Time.now.strftime("%Y%m%d%H%M")
+        config.trigger.before :destroy do |trigger|
+            trigger.warn = "Backing up postgres database #{database}..."
+            trigger.run_remote = {"inline": "mkdir -p #{dir} && echo localhost:5432:#{database}:homestead:secret > ~/.pgpass && chmod 600 ~/.pgpass && pg_dump -U homestead -h localhost #{database} > #{dir}/#{database}-#{now}.sql"}
         end
     end
 end

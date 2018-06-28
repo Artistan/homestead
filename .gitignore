@@ -6,8 +6,11 @@ phpunit.xml
 /Homestead.json
 /after.sh
 /aliases
+*.sql
+/mysqldump.sql.gz
+/mysql_backup
+/postgres_backup
 .idea
 ca.*.crt
 /system-*
 /.created
-*.sql
