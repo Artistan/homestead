@@ -4,10 +4,10 @@ mkdir /etc/nginx/ssl 2>/dev/null
 
 PATH_SSL="/etc/nginx/ssl"
 
-# Path to the custom $(hostname) Root CA certificate.
-PATH_ROOT_CNF="${PATH_SSL}/ca.$(hostname).cnf"
-PATH_ROOT_CRT="${PATH_SSL}/ca.$(hostname).crt"
-PATH_ROOT_KEY="${PATH_SSL}/ca.$(hostname).key"
+# Path to the custom Homestead $(hostname) Root CA certificate.
+PATH_ROOT_CNF="${PATH_SSL}/ca.homestead.$(hostname).cnf"
+PATH_ROOT_CRT="${PATH_SSL}/ca.homestead.$(hostname).crt"
+PATH_ROOT_KEY="${PATH_SSL}/ca.homestead.$(hostname).key"
 
 # Path to the custom site certificate.
 PATH_CNF="${PATH_SSL}/${1}.cnf"
@@ -17,9 +17,9 @@ PATH_KEY="${PATH_SSL}/${1}.key"
 
 BASE_CNF="
     [ ca ]
-    default_ca = ca_$(hostname)
+    default_ca = ca_homestead_$(hostname)
 
-    [ ca_$(hostname) ]
+    [ ca_homestead_$(hostname) ]
     dir           = $PATH_SSL
     certs         = $PATH_SSL
     new_certs_dir = $PATH_SSL
@@ -77,7 +77,7 @@ then
         [ req_distinguished_name ]
         O  = Vagrant
         C  = UN
-        CN = $(hostname) Root CA
+        CN = Homestead $(hostname) Root CA
     "
     echo "$cnf" > $PATH_ROOT_CNF
 
@@ -109,13 +109,13 @@ then
     "
     echo "$cnf" > $PATH_CNF
 
-    # Finally, generate the private key and certificate signed with the $(hostname) Root CA.
+    # Finally, generate the private key and certificate signed with the Homestead $(hostname) Root CA.
     openssl genrsa -out "$PATH_KEY" 2048 2>/dev/null
     openssl req -config "$PATH_CNF" \
         -key "$PATH_KEY" \
         -new -sha256 -out "$PATH_CSR" 2>/dev/null
     openssl x509 -req -extfile "$PATH_CNF" \
-        -extensions server_cert -days 365 \
+        -extensions server_cert -days 365 -sha256 \
         -in "$PATH_CSR" \
         -CA "$PATH_ROOT_CRT" -CAkey "$PATH_ROOT_KEY" -CAcreateserial \
         -out "$PATH_CRT" 2>/dev/null

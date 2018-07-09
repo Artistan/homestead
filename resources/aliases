@@ -14,6 +14,18 @@ alias xon='sudo phpenmod -s cli xdebug'
 
 alias kick_it='sudo service nginx restart; sudo service php5.6-fpm restart; sudo service php7.0-fpm restart; sudo service php7.1-fpm restart; sudo service php7.2-fpm restart'
 
+alias nrd="npm run dev"
+alias nrw="npm run watch"
+alias nrww="npm run watch-poll"
+alias nrh="npm run hot"
+alias nrp="npm run production"
+
+alias yrd="yarn run dev"
+alias yrw="yarn run watch"
+alias yrwp="yarn run watch-poll"
+alias yrh="yarn run hot"
+alias yrp="yarn run production"
+
 function artisan() {
     php artisan "$@"
 }
@@ -30,18 +42,26 @@ function dusk() {
 
 function php56() {
     sudo update-alternatives --set php /usr/bin/php5.6
+    sudo update-alternatives --set php-config /usr/bin/php-config5.6
+    sudo update-alternatives --set phpize /usr/bin/phpize5.6
 }
 
 function php70() {
     sudo update-alternatives --set php /usr/bin/php7.0
+    sudo update-alternatives --set php-config /usr/bin/php-config7.0
+    sudo update-alternatives --set phpize /usr/bin/phpize7.0
 }
 
 function php71() {
     sudo update-alternatives --set php /usr/bin/php7.1
+    sudo update-alternatives --set php-config /usr/bin/php-config7.1
+    sudo update-alternatives --set phpize /usr/bin/phpize7.1
 }
 
 function php72() {
     sudo update-alternatives --set php /usr/bin/php7.2
+    sudo update-alternatives --set php-config /usr/bin/php-config7.2
+    sudo update-alternatives --set phpize /usr/bin/phpize7.2
 }
 
 function serve-apache() {

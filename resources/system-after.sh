@@ -12,7 +12,7 @@ then
     # https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/
     echo "adding cert $1  to trusted root certs"
 
-    if [[ $( sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "ca.$1.crt" ) ]]
+    if [[ $( sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "ca.homestead.$1.crt" ) ]]
     then
         echo "killing chrome to get the new certificate"
         pkill -a -i "Google Chrome"
