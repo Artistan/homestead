@@ -144,6 +144,21 @@ class MakeCommandTest extends TestCase
     }
 
     /** @test */
+    public function a_privileged_after_shell_script_is_created_by_default()
+    {
+        $tester = new CommandTester(new MakeCommand());
+
+        $tester->execute([]);
+
+        $this->assertFileExists(self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh');
+
+        $this->assertFileEquals(
+            __DIR__.'/../resources/privileged-after.sh',
+            self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh'
+        );
+    }
+
+    /** @test */
     public function an_existing_after_shell_script_is_not_overwritten()
     {
         file_put_contents(
@@ -163,6 +178,25 @@ class MakeCommandTest extends TestCase
     }
 
     /** @test */
+    public function a_privileged_existing_after_shell_script_is_not_overwritten()
+    {
+        file_put_contents(
+            self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh',
+            'Already existing privileged-after.sh'
+        );
+        $tester = new CommandTester(new MakeCommand());
+
+        $tester->execute([]);
+
+        $this->assertFileExists(self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh');
+
+        $this->assertStringEqualsFile(
+            self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh',
+            'Already existing privileged-after.sh'
+        );
+    }
+
+    /** @test */
     public function an_after_file_is_not_created_if_it_is_explicitly_told_to()
     {
         $tester = new CommandTester(new MakeCommand());
@@ -172,6 +206,18 @@ class MakeCommandTest extends TestCase
         ]);
 
         $this->assertFileNotExists(self::$testDirectory.DIRECTORY_SEPARATOR.'after.sh');
+    }
+
+    /** @test */
+    public function a_privileged_after_file_is_not_created_if_it_is_explicitly_told_to()
+    {
+        $tester = new CommandTester(new MakeCommand());
+
+        $tester->execute([
+            '--no-privileged-after' => true,
+        ]);
+
+        $this->assertFileNotExists(self::$testDirectory.DIRECTORY_SEPARATOR.'privileged-after.sh');
     }
 
     /** @test */

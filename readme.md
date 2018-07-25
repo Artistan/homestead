@@ -1,3 +1,7 @@
+
+TODO: update all references to `192.168.10.1` with new hostname
+
+
 <p align="center"><img src="https://laravel.com/assets/img/components/logo-homestead.svg"></p>
 
 <p align="center">

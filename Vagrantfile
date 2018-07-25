@@ -10,6 +10,7 @@ confDir = $confDir ||= File.expand_path(File.dirname(__FILE__))
 homesteadYamlPath = confDir + "/Homestead.yaml"
 homesteadJsonPath = confDir + "/Homestead.json"
 afterScriptPath = confDir + "/after.sh"
+privilegedAfterScriptPath = confDir + "/privileged-after.sh"
 aliasesPath = confDir + "/aliases"
 
 if File.exist? homesteadYamlPath then
@@ -43,6 +44,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     if File.exist? afterScriptPath then
         config.vm.provision "shell", path: afterScriptPath, privileged: false, keep_color: true
+    end
+
+    if File.exist? privilegedAfterScriptPath then
+        config.vm.provision "shell", path: privilegedAfterScriptPath, privileged: true, keep_color: true
     end
 
     config.vm.provision :host_shell do |host_shell|

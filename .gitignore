@@ -5,6 +5,7 @@ phpunit.xml
 /Homestead.yaml
 /Homestead.json
 /after.sh
+/privileged-after.sh
 /aliases
 *.sql
 /mysqldump.sql.gz

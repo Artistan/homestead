@@ -29,8 +29,6 @@ sites:
     - map: homestead.test
       to: /home/vagrant/code/public
       schedule: true
-      php: "7.1"
-# php 7.1 so we can use xdebug
 
 databases:
     - homestead

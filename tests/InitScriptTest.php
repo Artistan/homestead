@@ -53,6 +53,14 @@ class InitScriptTest extends TestCase
     }
 
     /** @test */
+    public function it_creates_a_privileged_after_shell_script()
+    {
+        exec('bash init.sh');
+
+        $this->assertFileExists(self::$testDirectory.'/privileged-after.sh');
+    }
+
+    /** @test */
     public function it_creates_an_aliases_file()
     {
         exec('bash init.sh');
