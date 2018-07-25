@@ -41,10 +41,13 @@ do
         # could use manual install, but why?
         # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
         # section 8. -d command...., still need xdebug enabled via php.ini!!!
+        service "php${version}-fpm restart"
     fi
 done
 #nginx gzip...
 sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
+service nginx restart
+service apache2 restart
 
 ## cli execute with debug examples.
 # https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm
@@ -70,3 +73,6 @@ sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
 # copy the cert to your vagrant directory so you cant trust it...
 cp -f "/etc/nginx/ssl/ca.homestead.$(hostname).crt" "/vagrant/ca.homestead.$(hostname).crt"
 echo "add ca.homestead.$(hostname).crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
+
+
+
