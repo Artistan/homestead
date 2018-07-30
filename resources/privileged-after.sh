@@ -13,6 +13,13 @@ then
 	ln -s /usr/bin/php /usr/local/bin/php
 fi
 
+# mcrypt
+apt-get -y install gcc make autoconf libc-dev pkg-config
+apt-get -y install libmcrypt-dev
+printf "\n" | pecl install mcrypt-1.0.1
+bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/fpm/conf.d/mcrypt.ini"
+bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/cli/conf.d/mcrypt.ini"
+
 # memcache -- old, for billing
 apt-get --yes --force-yes install php-memcache -y
 
