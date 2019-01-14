@@ -1,3 +1,7 @@
+.idea
+ca.*.crt
+/system-*
+/.created
 */*.box
 /vendor
 /.vagrant
@@ -11,7 +15,4 @@ phpunit.xml
 /mysqldump.sql.gz
 /mysql_backup
 /postgres_backup
-.idea
-ca.*.crt
-/system-*
-/.created
+/user-customizations.sh

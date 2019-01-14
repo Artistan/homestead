@@ -40,72 +40,53 @@ fi
 block="server {
     listen ${3:-80};
     listen ${4:-443} ssl http2;
-    server_name $1;
+    server_name .$1;
+    root \"$2\";
 
-    root $2;
-    index index.php index.html index.htm;
+    index index.html index.htm index.php;
 
-    error_log /var/log/nginx/$1-error.log error;
-    access_log off;
-
-    gzip on;
-    gzip_types
-        # text/html is always compressed by HttpGzipModule
-        text/css
-        text/javascript
-        text/xml
-        text/plain
-        text/x-component
-        application/javascript
-        application/x-javascript
-        application/json
-        application/xml
-        application/rss+xml
-        font/truetype
-        font/opentype
-        application/vnd.ms-fontobject
-        image/svg+xml;
-
-    # Max post size
-    client_max_body_size 8M;
+    charset utf-8;
 
     $rewritesTXT
 
-    location ~ /.well-known {
-        allow all;
-    }
-
-    location ~ (^\.|/\.) {
-        deny all;
-    }
-
-    location = /rewrite.php {
-        rewrite ^(.*)$ /install.php;
-    }
-
     location / {
-        try_files \$uri \$uri/ @elgg;
+        if (!-e \$request_filename) {
+            rewrite  ^(.*)$  /index.php?s=/\$1  last;
+            break;
+        }
         $headersTXT
     }
 
     $configureZray
 
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log  /var/log/nginx/$1-error.log error;
+
+    sendfile off;
+
+    client_max_body_size 100m;
+
     location ~ \.php$ {
-        try_files \$uri @elgg;
-        fastcgi_index index.php;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php$5-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-        include /etc/nginx/fastcgi_params;
+        $paramsTXT
+
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+        fastcgi_connect_timeout 300;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
     }
 
-    location @elgg {
-        fastcgi_pass unix:/var/run/php/php$5-fpm.sock;
-
-        include /etc/nginx/fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME \$document_root/index.php;
-        fastcgi_param SCRIPT_NAME     /index.php;
-        fastcgi_param QUERY_STRING    __elgg_uri=\$uri&\$args;
+    location ~ /\.ht {
+        deny all;
     }
 
     ssl_certificate     /etc/nginx/ssl/$1.crt;

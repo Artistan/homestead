@@ -10,7 +10,11 @@ confDir = $confDir ||= File.expand_path(File.dirname(__FILE__))
 homesteadYamlPath = confDir + "/Homestead.yaml"
 homesteadJsonPath = confDir + "/Homestead.json"
 afterScriptPath = confDir + "/after.sh"
+<<<<<<< HEAD
 privilegedAfterScriptPath = confDir + "/privileged-after.sh"
+=======
+customizationScriptPath = confDir + "/user-customizations.sh"
+>>>>>>> upstream/master
 aliasesPath = confDir + "/aliases"
 
 if File.exist? homesteadYamlPath then
@@ -52,6 +56,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.provision :host_shell do |host_shell|
         host_shell.inline = './system-after.sh ' + hostname + ' ' + ARGV[0]
+    end
+
+    if File.exist? customizationScriptPath then
+        config.vm.provision "shell", path: customizationScriptPath, privileged: false, keep_color: true
+    end
+
+    if Vagrant.has_plugin?('vagrant-hostsupdater')
+        config.hostsupdater.aliases = settings['sites'].map { |site| site['map'] }
+    elsif Vagrant.has_plugin?('vagrant-hostmanager')
+        config.hostmanager.enabled = true
+        config.hostmanager.manage_host = true
+        config.hostmanager.aliases = settings['sites'].map { |site| site['map'] }
     end
 end
 
