@@ -10,11 +10,8 @@ confDir = $confDir ||= File.expand_path(File.dirname(__FILE__))
 homesteadYamlPath = confDir + "/Homestead.yaml"
 homesteadJsonPath = confDir + "/Homestead.json"
 afterScriptPath = confDir + "/after.sh"
-<<<<<<< HEAD
 privilegedAfterScriptPath = confDir + "/privileged-after.sh"
-=======
 customizationScriptPath = confDir + "/user-customizations.sh"
->>>>>>> upstream/master
 aliasesPath = confDir + "/aliases"
 
 if File.exist? homesteadYamlPath then
