@@ -24,10 +24,10 @@ bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/cli/conf.
 apt-get --yes --force-yes install php-memcache -y
 
 # ldap authentication
-apt-get --yes --force-yes install php5.6-ldap
-apt-get --yes --force-yes install php7.0-ldap
-apt-get --yes --force-yes install php7.1-ldap
-apt-get --yes --force-yes install php7.2-ldap
+#apt-get --yes --force-yes install php5.6-ldap
+#apt-get --yes --force-yes install php7.0-ldap
+#apt-get --yes --force-yes install php7.1-ldap
+#apt-get --yes --force-yes install php7.2-ldap
 
 ## declare an array variable
 declare -a versions_list=("5.6" "7.0" "7.1" "7.2")
