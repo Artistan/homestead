@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 if [ -f /etc/neo4j/neo4j.conf ]
 then
     echo "Neo4j already installed."
@@ -12,7 +11,7 @@ echo 'deb https://debian.neo4j.org/repo stable/' | sudo tee -a /etc/apt/sources.
 apt-get update
 
 # Install Neo4j Community Edition
-apt-get install -y neo4j=1:3.3.5
+apt-get install -y neo4j
 
 # Stop Neo4j for configuration
 systemctl stop neo4j
