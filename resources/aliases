@@ -12,7 +12,7 @@ alias serve=serve-laravel
 alias xoff='sudo phpdismod -s cli xdebug'
 alias xon='sudo phpenmod -s cli xdebug'
 
-alias kick_it='sudo service nginx restart; sudo service php5.6-fpm restart; sudo service php7.0-fpm restart; sudo service php7.1-fpm restart; sudo service php7.2-fpm restart'
+alias kick_it='sudo service nginx restart; sudo service php7.1-fpm restart; sudo service php7.2-fpm restart; sudo service php7.3-fpm restart'
 
 alias nrd="npm run dev"
 alias nrw="npm run watch"
@@ -38,18 +38,6 @@ function dusk() {
     fi
 
     php artisan dusk "$@"
-}
-
-function php56() {
-    sudo update-alternatives --set php /usr/bin/php5.6
-    sudo update-alternatives --set php-config /usr/bin/php-config5.6
-    sudo update-alternatives --set phpize /usr/bin/phpize5.6
-}
-
-function php70() {
-    sudo update-alternatives --set php /usr/bin/php7.0
-    sudo update-alternatives --set php-config /usr/bin/php-config7.0
-    sudo update-alternatives --set phpize /usr/bin/phpize7.0
 }
 
 function php71() {
@@ -275,4 +263,16 @@ function xphp() {
         "$@"
 
     if ! $XDEBUG_ENABLED; then xoff; fi
+}
+
+function update-socket-wrench() {
+    cd /var/www/socket-wrench
+    git pull origin release
+    composer install
+    php artisan migrate --force
+}
+
+function seed-socket-wrench() {
+    cd /var/www/socket-wrench
+    php artisan db:seed
 }

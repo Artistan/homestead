@@ -2,8 +2,8 @@
 
 DEBIAN_FRONTEND=noninteractive
 
-apt-get --yes --force-yes update
-# sudo apt-get --yes --force-yes upgrade
+apt-get update
+apt-get upgrade
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 git config --global --add oh-my-zsh.hide-status 1
@@ -14,27 +14,27 @@ then
 fi
 
 # mcrypt
-apt-get -y install gcc make autoconf libc-dev pkg-config
-apt-get -y install libmcrypt-dev
-printf "\n" | pecl install mcrypt-1.0.1
-bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/fpm/conf.d/mcrypt.ini"
-bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/cli/conf.d/mcrypt.ini"
+apt-get install gcc make autoconf libc-dev pkg-config -y
+apt-get install libmcrypt-dev -y
+printf "\n" | "channel://pecl.php.net/mcrypt-1.0.2"
 
 # memcache -- old, for billing
-apt-get --yes --force-yes install php-memcache -y
+apt-get install php-memcache -y
 
 # ldap authentication
-#apt-get --yes --force-yes install php5.6-ldap
-#apt-get --yes --force-yes install php7.0-ldap
-#apt-get --yes --force-yes install php7.1-ldap
-#apt-get --yes --force-yes install php7.2-ldap
+apt-get install php7.1-ldap -y
+apt-get install php7.2-ldap -y
+apt-get install php7.3-ldap -y
 
 ## declare an array variable
-declare -a versions_list=("5.6" "7.0" "7.1" "7.2")
+declare -a versions_list=("7.1" "7.2" "7.3")
 
 ## now loop through the above array
 for version in "${versions_list[@]}"
 do
+    bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/fpm/conf.d/mcrypt.ini"
+    bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/cli/conf.d/mcrypt.ini"
+
     # add xdebug settings if not exists.
     (grep -q 'profiler_enable_trigger' "/etc/php/$version/mods-available/xdebug.ini")
     if [[ $? -eq 1 ]]
@@ -44,7 +44,7 @@ do
         cp -f "/etc/php/$version/mods-available/xdebug.ini" "/etc/php/$version/mods-available/cli-xdebug.ini"
         # try to autostart
         sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" "/etc/php/$version/mods-available/cli-xdebug.ini"
-        ln -s /etc/php/7.1/mods-available/cli-xdebug.ini "/etc/php/$version/mods-available/20-xdebug.ini"
+        ln -s "/etc/php/$version/mods-available/cli-xdebug.ini" "/etc/php/$version/mods-available/20-xdebug.ini"
         # could use manual install, but why?
         # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
         # section 8. -d command...., still need xdebug enabled via php.ini!!!
