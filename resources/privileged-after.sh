@@ -19,7 +19,7 @@ fi
 # mcrypt
 apt-get install gcc make autoconf libc-dev pkg-config -y
 apt-get install libmcrypt-dev -y
-printf "\n" | "channel://pecl.php.net/mcrypt-1.0.2"
+printf "\n" | pecl install mcrypt-1.0.2
 
 # memcache -- old, for billing
 apt-get install php-memcache -y
