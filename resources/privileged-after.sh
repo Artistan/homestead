@@ -2,6 +2,9 @@
 
 DEBIAN_FRONTEND=noninteractive
 
+# symlink php to bin/php
+ln -s /usr/local/bin/php /bin/php
+
 apt-get update
 apt-get upgrade
 
@@ -32,6 +35,12 @@ declare -a versions_list=("7.1" "7.2" "7.3")
 ## now loop through the above array
 for version in "${versions_list[@]}"
 do
+    # update the includes path
+    includespath="\n\ninclude_path = \".:/usr/share/php:./include:/usr/local/lib/php\"\n"
+    printf "$includespath" | tee -a "/etc/php/$version/fpm/php.ini"
+    printf "$includespath" | tee -a "/etc/php/$version/cli/php.ini"
+
+    # add mcrypt to the list...
     bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/fpm/conf.d/mcrypt.ini"
     bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/cli/conf.d/mcrypt.ini"
 
