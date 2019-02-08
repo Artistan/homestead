@@ -5,8 +5,8 @@ DEBIAN_FRONTEND=noninteractive
 # symlink php to bin/php
 ln -s /usr/local/bin/php /bin/php
 
-apt-get update
-apt-get upgrade
+#apt-get update
+#apt-get upgrade
 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 git config --global --add oh-my-zsh.hide-status 1
@@ -17,17 +17,8 @@ then
 fi
 
 # mcrypt
-apt-get install gcc make autoconf libc-dev pkg-config -y
-apt-get install libmcrypt-dev -y
+apt-get install gcc make autoconf libc-dev pkg-config libmcrypt-dev php-memcache php7.1-ldap php7.2-ldap php7.3-ldap -y
 printf "\n" | pecl install mcrypt-1.0.2
-
-# memcache -- old, for billing
-apt-get install php-memcache -y
-
-# ldap authentication
-apt-get install php7.1-ldap -y
-apt-get install php7.2-ldap -y
-apt-get install php7.3-ldap -y
 
 ## declare an array variable
 declare -a versions_list=("7.1" "7.2" "7.3")
@@ -61,9 +52,9 @@ do
     fi
 done
 #nginx gzip...
-sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
-#service nginx restart
-#service apache2 restart
+#sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
+service apache2 restart
+service nginx restart
 
 ## cli execute with debug examples.
 # https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm
