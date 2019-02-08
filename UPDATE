@@ -3,7 +3,7 @@
 #  https://laravel.com/docs/5.4/homestead#updating-homestead
 vagrant box update
 git fetch upstream
-git merge upstream/master
+git pull upstream master
 git push origin master
 
 composer update
