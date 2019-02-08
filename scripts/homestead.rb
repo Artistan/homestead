@@ -68,7 +68,7 @@ class Homestead
 
     # Configure A Few Hyper-V Settings
     config.vm.provider "hyperv" do |h, override|
-      h.vmname = settings['names'] ||= 'homestead-7'
+      h.vmname = settings['name'] ||= 'homestead-7'
       h.cpus = settings['cpus'] ||= 1
       h.memory = settings['memory'] ||= 2048
       h.linked_clone = true
@@ -208,8 +208,8 @@ class Homestead
     end
 
     if settings.include? 'sites'
-      socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
-      settings['sites'].unshift(socket)
+      # socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
+      # settings['sites'].unshift(socket)
 
       settings['sites'].each do |site|
 
@@ -414,7 +414,7 @@ class Homestead
 
     # Configure All Of The Configured Databases
     if settings.has_key?('databases')
-      settings['databases'].unshift('socket_wrench')
+      # settings['databases'].unshift('socket_wrench')
 
       settings['databases'].each do |db|
         config.vm.provision 'shell' do |s|
@@ -485,7 +485,7 @@ class Homestead
     # Update Composer On Every Provision
     config.vm.provision 'shell' do |s|
       s.name = 'Update Composer'
-      s.inline = 'sudo -u vagrant /usr/local/bin/composer self-update --no-progress && sudo chown -R vagrant:vagrant /home/vagrant/.composer/'
+      s.inline = 'sudo chown -R vagrant:vagrant /usr/local/bin && sudo -u vagrant /usr/local/bin/composer self-update --no-progress && sudo chown -R vagrant:vagrant /home/vagrant/.composer/'
       s.privileged = false
     end
 

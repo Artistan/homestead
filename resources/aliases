@@ -16,7 +16,7 @@ alias kick_it='sudo service nginx restart; sudo service php7.1-fpm restart; sudo
 
 alias nrd="npm run dev"
 alias nrw="npm run watch"
-alias nrww="npm run watch-poll"
+alias nrwp="npm run watch-poll"
 alias nrh="npm run hot"
 alias nrp="npm run production"
 
