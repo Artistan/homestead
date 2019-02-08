@@ -62,8 +62,8 @@ do
 done
 #nginx gzip...
 sed -i "s/#gzip/gzip/" "/etc/nginx/nginx.conf"
-service nginx restart
-service apache2 restart
+#service nginx restart
+#service apache2 restart
 
 ## cli execute with debug examples.
 # https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm
@@ -92,3 +92,8 @@ echo "add ca.homestead.$(hostname).crt to your trusted certificates https://www.
 
 
 
+echo "--------------------------------"
+echo "--------------------------------"
+echo "    restart apache or nginx     "
+echo "--------------------------------"
+echo "--------------------------------"

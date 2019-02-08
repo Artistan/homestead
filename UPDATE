@@ -10,3 +10,4 @@ composer update
 
 # update after composer
 git commit -a
+git push origin master
