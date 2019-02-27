@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # If you would like to do some extra provisioning you may
 # add any commands you wish to this file and they will
@@ -18,13 +18,6 @@ version="7.3"
 if [[ $? -eq 1 ]]
 then
     printf "\nsource ~/.profile\n" | tee -a ~/.zshrc
-fi
-
-# add profile source PHP_IDE_CONFIG if not exists.
-(grep -q 'PHP_IDE_CONFIG' /home/vagrant/.zshrc)
-if [[ $? -eq 1 ]]
-then
-    printf "\nexport PHP_IDE_CONFIG=\"serverName=$(hostname)\"\n" | tee -a ~/.zshrc
 fi
 
 # symlink the executable.
@@ -60,10 +53,12 @@ fi
 
 # restart the webservice. Nginx or Apache.
 ps auxw | grep apache2 | grep -v grep > /dev/null
-if [ $? != 0 ]
+if [[ $? -ne 1 ]]
 then
+    echo "$? apache restart"
     sudo service apache2 restart > /dev/null
 else
+    echo "$? nginx restart"
     sudo service nginx restart > /dev/null
 fi
 

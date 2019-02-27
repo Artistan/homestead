@@ -1,8 +1,19 @@
 ---
-ip: "192.168.10.10"
+name: "Homestead"
+hostname: "homestead"
+ip: "192.168.10.13"
 memory: 2048
 cpus: 1
 provider: virtualbox
+
+variables:
+    - key: APP_ENV
+      value: local
+    - key: PHP_IDE_CONFIG
+      value: "serverName=homestead"
+#  https://xdebug.org/docs/remote
+#    - key: XDEBUG_CONFIG
+#      value: "profiler_enable=1"
 
 authorize: ~/.ssh/id_rsa.pub
 
@@ -12,10 +23,29 @@ keys:
 folders:
     - map: ~/code
       to: /home/vagrant/code
+      type: "nfs"
 
 sites:
-    - map: homestead.test
-      to: /home/vagrant/code/public
+    - map: phone-api.local
+      to: /home/vagrant/code/phone/phone-api/www
+      schedule: false
+      type: apache
+    - map: phone-ext.local
+      to: /home/vagrant/code/phone/phone-extadmin/www
+      schedule: false
+      type: apache
+    - map: phone.local
+      to: /home/vagrant/code/phone/phone-manager/www
+      schedule: false
+      type: apache
+    - map: phone-reps.local
+      to: /home/vagrant/code/phone-rep-stats
+      schedule: false
+      type: apache
+    - map: phone-test.local
+      to: /home/vagrant/code/phone
+      schedule: false
+      type: apache
 
 databases:
     - homestead
