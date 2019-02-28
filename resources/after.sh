@@ -57,6 +57,14 @@ then
     # section 8. -d command...., still need xdebug enabled via php.ini!!!
 fi
 
+# add sql_mode settings if not exists.
+(grep -q 'sql_mode' "/etc/mysql/mysql.conf.d/mysqld.cnf")
+if [[ $? -eq 1 ]]
+then
+    sudo sed -i "s/\[mysqld\]/\[mysqld\]\nsql_mode = \"STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION\"" /etc/mysql/mysql.conf.d/mysqld.cnf
+    sudo service mysql restart
+fi
+
 # updates to php, so restart fpm.
 sudo service "php${version}-fpm" restart
 
