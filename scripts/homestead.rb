@@ -208,7 +208,7 @@ class Homestead
     end
 
     if settings.include? 'sites'
-      socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
+      socket = { 'map' => 'socket-wrench.' + config.vm.hostname + '.test', 'to' => '/var/www/socket-wrench/public' }
       settings['sites'].unshift(socket)
 
       settings['sites'].each do |site|
