@@ -41,6 +41,7 @@ if [[ $? -eq 1 ]]
 then
     if [[ -f "/etc/php/$version/mods-available/xdebug.ini" ]]
     then
+        #ip=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(192.([0-9]*\.){2}[0-9]*).*/\2/p'`
         xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
         printf "$xdebug" | sudo tee -a "/etc/php/$version/mods-available/xdebug.ini"
     fi
