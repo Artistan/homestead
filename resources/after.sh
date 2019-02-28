@@ -39,17 +39,25 @@ sudo bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version
 (grep -q 'profiler_enable_trigger' "/etc/php/$version/mods-available/xdebug.ini")
 if [[ $? -eq 1 ]]
 then
-    xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
-    printf "$xdebug" | sudo tee -a "/etc/php/$version/mods-available/xdebug.ini"
-    cp -f "/etc/php/$version/mods-available/xdebug.ini" "/etc/php/$version/mods-available/cli-xdebug.ini"
-    # try to autostart
-    sudo sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" "/etc/php/$version/mods-available/cli-xdebug.ini"
-    sudo ln -s "/etc/php/$version/mods-available/cli-xdebug.ini" "/etc/php/$version/mods-available/20-xdebug.ini"
+    if [[ -f "/etc/php/$version/mods-available/xdebug.ini" ]]
+    then
+        xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
+        printf "$xdebug" | sudo tee -a "/etc/php/$version/mods-available/xdebug.ini"
+    fi
+
+    if [[ -f "/etc/php/$version/mods-available/cli-xdebug.ini" ]]
+    then
+        # try to autostart
+        sudo sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" "/etc/php/$version/mods-available/cli-xdebug.ini"
+        sudo ln -s "/etc/php/$version/mods-available/cli-xdebug.ini" "/etc/php/$version/mods-available/20-xdebug.ini"
+    fi
     # could use manual install, but why?
     # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
     # section 8. -d command...., still need xdebug enabled via php.ini!!!
-    sudo service "php${version}-fpm" restart
 fi
+
+# updates to php, so restart fpm.
+sudo service "php${version}-fpm" restart
 
 # restart the webservice. Nginx or Apache.
 ps auxw | grep apache2 | grep -v grep > /dev/null
