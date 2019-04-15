@@ -208,8 +208,8 @@ class Homestead
     end
 
     if settings.include? 'sites'
-      # socket = { 'map' => 'socket-wrench.test', 'to' => '/var/www/socket-wrench/public' }
-      # settings['sites'].unshift(socket)
+      socket = { 'map' => 'socket-wrench.' + config.vm.hostname + '.test', 'to' => '/var/www/socket-wrench/public' }
+      settings['sites'].unshift(socket)
 
       settings['sites'].each do |site|
 
@@ -267,7 +267,7 @@ class Homestead
           end
 
           s.path = script_dir + "/serve-#{type}.sh"
-          s.args = [site['map'], site['to'], site['port'] ||= http_port, site['ssl'] ||= https_port, site['php'] ||= '7.3', params ||= '', site['zray'] ||= 'false', site['exec'] ||= 'false', headers ||= '', rewrites ||= '']
+          s.args = [site['map'], site['to'], site['port'] ||= http_port, site['ssl'] ||= https_port, site['php'] ||= '7.3', params ||= '', site['zray'] ||= 'false', site['xhgui'] ||= '', site['exec'] ||= 'false', headers ||= '', rewrites ||= '']
 
           if site['zray'] == 'true'
             config.vm.provision 'shell' do |s|
@@ -284,6 +284,25 @@ class Homestead
               s.inline = 'rm -rf ' + site['to'].to_s + '/ZendServer'
             end
           end
+
+          if site['xhgui'] == 'true'
+            config.vm.provision 'shell' do |s|
+              s.path = script_dir + '/install-mongo.sh'
+            end
+
+            config.vm.provision 'shell' do |s|
+              s.path = script_dir + '/install-xhgui.sh'
+            end
+
+            config.vm.provision 'shell' do |s|
+              s.inline = 'ln -sf /opt/xhgui/webroot ' + site['to'] + '/xhgui'
+            end
+          else
+            config.vm.provision 'shell' do |s|
+              s.inline = 'rm -rf ' + site['to'].to_s + '/xhgui'
+            end
+          end
+
         end
 
         # Configure The Cron Schedule
@@ -411,10 +430,9 @@ class Homestead
       end
     end
 
-
     # Configure All Of The Configured Databases
     if settings.has_key?('databases')
-      # settings['databases'].unshift('socket_wrench')
+      settings['databases'].unshift('socket_wrench')
 
       settings['databases'].each do |db|
         config.vm.provision 'shell' do |s|
@@ -485,7 +503,7 @@ class Homestead
     # Update Composer On Every Provision
     config.vm.provision 'shell' do |s|
       s.name = 'Update Composer'
-      s.inline = 'sudo chown -R vagrant:vagrant /usr/local/bin && sudo -u vagrant /usr/local/bin/composer self-update --no-progress && sudo chown -R vagrant:vagrant /home/vagrant/.composer/'
+      s.inline = 'sudo -u vagrant /usr/local/bin/composer self-update --no-progress && sudo chown -R vagrant:vagrant /home/vagrant/.composer/'
       s.privileged = false
     end
 
@@ -525,10 +543,10 @@ class Homestead
     # Turn off CFQ scheduler idling https://github.com/laravel/homestead/issues/896
     if settings.has_key?('disable_cfq')
       config.vm.provision 'shell' do |s|
-        s.inline = 'sudo echo 0 >/sys/block/sda/queue/iosched/slice_idle'
+        s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/slice_idle"'
       end
       config.vm.provision 'shell' do |s|
-        s.inline = 'sudo echo 0 >/sys/block/sda/queue/iosched/group_idle'
+        s.inline = 'sudo sh -c "echo 0 >> /sys/block/sda/queue/iosched/group_idle"'
       end
     end
   end
