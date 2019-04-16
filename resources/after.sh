@@ -12,12 +12,10 @@ version="7.2"
 extensions="/usr/lib/php/20170718"
 mcrypt="1.0.2"
 blitz="0.10.4-PHP7"
-zsh_plugins="plugins=(git laravel5 dircycle npm rsync)"
 
-# vagrant user zsh and plugins enabled
-git config --global --add oh-my-zsh.hide-status 1
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-printf "$zsh_plugins" | tee -a "/home/vagrant/.zshrc"
+# vagrant user zsh plugins enabled ... git, laravel, directory cycle, npm and rsync
+sudo chsh -s /usr/bin/zsh vagrant
+sudo sed -i "s/plugins=(git)/plugins=(git laravel5 dircycle npm rsync)/" ~/.zshrc
 
 # symlink php to bin/php
 sudo ln -s /usr/local/bin/php /bin/php
