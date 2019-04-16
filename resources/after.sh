@@ -8,53 +8,91 @@
 # to apply, you may also create user-customizations.sh,
 # which will be run after this script.
 
-version="7.3"
+version="7.2"
+extensions="/usr/lib/php/20170718"
+mcrypt="1.0.2"
+blitz="0.10.4-PHP7"
+zsh_plugins="plugins=(git laravel5 dircycle npm rsync)"
 
-#sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-#git config --global --add oh-my-zsh.hide-status 1
+# vagrant user zsh and plugins enabled
+git config --global --add oh-my-zsh.hide-status 1
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+printf "$zsh_plugins" | tee -a "/home/vagrant/.zshrc"
 
-# add profile source if not exists.
-(grep -q '.profile' /home/vagrant/.zshrc)
-if [[ $? -eq 1 ]]
-then
-    printf "\nsource ~/.profile\n" | tee -a ~/.zshrc
-fi
+# symlink php to bin/php
+sudo ln -s /usr/local/bin/php /bin/php
 
-# symlink the executable.
 if [[ ! -e /usr/local/bin/php ]]
 then
-	sudo ln -s /usr/bin/php /usr/local/bin/php
+        ln -s /usr/bin/php /usr/local/bin/php
 fi
 
-sudo apt-get install gcc make autoconf libc-dev pkg-config libmcrypt-dev php-memcache "php$version-ldap" -y
-sudo pecl channel-update pecl.php.net
-printf "\n" | sudo pecl install mcrypt-1.0.2
+# update default php version to "$version"
+sudo update-alternatives --set php /usr/bin/"php$version"
+sudo update-alternatives --set phar "/usr/bin/phar$version"
+sudo update-alternatives --set phar.phar "/usr/bin/phar.phar$version"
+sudo update-alternatives --set phpize "/usr/bin/phpize$version"
+sudo update-alternatives --set php-config "/usr/bin/php-config$version"
 
-################## PHP UPDATES ##################
-# add mcrypt to the list...
-sudo bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/fpm/conf.d/mcrypt.ini"
-sudo bash -c "echo extension=/usr/lib/php/20180731/mcrypt.so > /etc/php/$version/cli/conf.d/mcrypt.ini"
+sudo DEBIAN_FRONTEND=noninteractive apt install -y --allow-unauthenticated -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confold gcc make autoconf libc-dev libmcrypt-dev htmldoc pkg-config "php$version-ldap" "php$version-memcache" "php$version-imagick" "php$version-gmp" "php$version-apc"
+
+# update the includes path
+includespath="\n\ninclude_path = \".:/usr/share/php:./include:/usr/local/lib/php\"\n"
+printf "$includespath" | sudo tee -a "/etc/php/$version/fpm/php.ini"
+printf "$includespath" | sudo tee -a "/etc/php/$version/cli/php.ini"
+
+# install mcrypt module (compiled via PHP $version)
+sudo pecl channel-update pecl.php.net
+sudo pecl install "mcrypt-$mcrypt"
+
+# PHP $version -- $extensions directory
+sudo bash -c "echo extension=$extensions/mcrypt.so > /etc/php/$version/mods-available/mcrypt.ini"
+
+sudo ln -s "/etc/php/$version/mods-available/mcrypt.ini" "/etc/php/$version/cli/conf.d/20-mcrypt.ini"
+sudo ln -s "/etc/php/$version/mods-available/mcrypt.ini" "/etc/php/$version/fpm/conf.d/20-mcrypt.ini"
+
+# add elasticsearch settings if not found.
+if [[ -e /etc/elasticsearch/elasticsearch.yml ]] && ! sudo grep -Fq '_local_,_site_' /etc/elasticsearch/elasticsearch.yml;
+then
+    echo 'Configuring Elasticsearch ...';
+    sudo bash -c 'echo network.host: ["_local_","_site_"] >> /etc/elasticsearch/elasticsearch.yml';
+    sudo bash -c 'echo path.repo: "/home/vagrant/elasticsnaps" >> /etc/elasticsearch/elasticsearch.yml';
+    sudo mkdir ~/elasticsnaps;
+    sudo chown elasticsearch:elasticsearch ~/elasticsnaps;
+    sudo service elasticsearch restart;
+fi
+
+# add blitz if does not exist
+if ! php -m | grep -q 'blitz';
+then
+    echo 'Installing Blitz ...';
+    sudo git clone https://github.com/alexeyrybak/blitz.git ~/blitz;
+    cd ~/blitz;
+    sudo git checkout -b "$blitz" "$blitz";
+    sudo phpize;
+    sudo ./configure;
+    sudo make;
+    sudo make install;
+    sudo bash -c "echo extension=blitz.so > /etc/php/$version/mods-available/blitz.ini";
+    sudo ln -s "/etc/php/$version/mods-available/blitz.ini"  "/etc/php/$version/cli/conf.d/20-blitz.ini";
+    sudo ln -s "/etc/php/$version/mods-available/blitz.ini"  "/etc/php/$version/fpm/conf.d/20-blitz.ini";
+fi
+
 
 # add xdebug settings if not exists.
 (grep -q 'profiler_enable_trigger' "/etc/php/$version/mods-available/xdebug.ini")
 if [[ $? -eq 1 ]]
 then
-    if [[ -f "/etc/php/$version/mods-available/xdebug.ini" ]]
-    then
-        #ip=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(192.([0-9]*\.){2}[0-9]*).*/\2/p'`
-        xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
-        printf "$xdebug" | sudo tee -a "/etc/php/$version/mods-available/xdebug.ini"
-    fi
+   xdebug="\n\nxdebug.profiler_enable_trigger=1;\nxdebug.profiler_output_dir=\"~/code/xdebug\"\nxdebug.trace_enable_trigger=1\nxdebug.trace_output_dir=\"~/code/xdebug\"\nxdebug.remote_host=\"192.168.10.1\"\nxdebug.remote_mode=\"jit\""
+   printf "$xdebug" | tee -a "/etc/php/$version/mods-available/xdebug.ini"
+   sudo cp -f "/etc/php/$version/mods-available/xdebug.ini" "/etc/php/$version/mods-available/cli-xdebug.ini"
 
-    if [[ -f "/etc/php/$version/mods-available/cli-xdebug.ini" ]]
-    then
-        # try to autostart
-        sudo sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" "/etc/php/$version/mods-available/cli-xdebug.ini"
-        sudo ln -s "/etc/php/$version/mods-available/cli-xdebug.ini" "/etc/php/$version/mods-available/20-xdebug.ini"
-    fi
-    # could use manual install, but why?
-    # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
-    # section 8. -d command...., still need xdebug enabled via php.ini!!!
+   # try to autostart
+   sudo sed -i "s/xdebug.so/xdebug.so\nxdebug.remote_autostart=1/" "/etc/php/$version/mods-available/cli-xdebug.ini"
+   sudo ln -s "/etc/php/$version/mods-available/cli-xdebug.ini" "/etc/php/$version/mods-available/20-xdebug.ini"
+   # could use manual install, but why?
+   # https://www.jetbrains.com/help/phpstorm/configuring-remote-php-interpreters.html#d37011e361
+   # section 8. -d command...., still need xdebug enabled via php.ini!!!
 fi
 
 # add sql_mode settings if not exists.
@@ -65,9 +103,7 @@ then
     sudo service mysql restart
 fi
 
-# updates to php, so restart fpm.
-sudo service "php${version}-fpm" restart
-
+sudo systemctl restart "php$version-fpm"
 # restart the webservice. Nginx or Apache.
 ps auxw | grep apache2 | grep -v grep > /dev/null
 if [[ $? -ne 1 ]]
@@ -79,22 +115,14 @@ else
     sudo service nginx restart > /dev/null
 fi
 
-## cli execute with debug examples.
-# https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm
+# https://apple.stackexchange.com/questions/80623/import-certificates-into-the-system-keychain-via-the-command-line
+# copy the cert to your vagrant directory so you cant trust it...
+sudo cp -f "/etc/nginx/ssl/ca.homestead.$(hostname).crt" "/vagrant/ca.homestead.$(hostname).crt"
 
-## phpstorm script run setup
-# https://confluence.jetbrains.com/display/PhpStorm/Working+with+Remote+PHP+Interpreters+in+PhpStorm
 
-## phpstorm xdebug setup
-# https://www.jetbrains.com/help/phpstorm/configuring-xdebug.html
-
-## validate your configuration
-# https://confluence.jetbrains.com/display/PhpStorm/Validating+Your+Debugging+Configuration
-
-## server config in Homestead.yaml - so phpstorm knows which server it is dealing with.
-# https://confluence.jetbrains.com/display/PhpStorm/Debugging+PHP+CLI+scripts+with+PhpStorm#DebuggingPHPCLIscriptswithPhpStorm-2.StarttheScriptwithDebuggerOptions
-# variables:
-#     - key: APP_ENV
-#       value: number2
-#     - key: PHP_IDE_CONFIG
-#       value: serverName=number2
+echo "--------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo "    restarted apache and php$version-fpm    "
+echo "    add ca.homestead.$(hostname).crt to your trusted certificates https://www.comodo.com/support/products/authentication_certs/setup/mac_chrome.php"
+echo "--------------------------------------------------------------------------------------------------------------------------------------------------------"
+echo "--------------------------------------------------------------------------------------------------------------------------------------------------------"
