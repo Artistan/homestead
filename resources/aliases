@@ -276,3 +276,7 @@ function seed-socket-wrench() {
     cd /var/www/socket-wrench
     php artisan db:seed
 }
+
+function datesync() {
+    sudo service ntp stop && sudo ntpd -gq && sudo service ntp start
+}
