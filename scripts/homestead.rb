@@ -18,7 +18,7 @@ class Homestead
     # Configure The Box
     config.vm.define settings['name'] ||= 'homestead-7'
     config.vm.box = settings['box'] ||= 'laravel/homestead'
-    config.vm.box_version = settings['version'] ||= '>= 7.0.0'
+    config.vm.box_version = settings['version'] ||= '>= 7.2.1'
     config.vm.hostname = settings['hostname'] ||= 'homestead'
 
     # Configure A Private Network IP
@@ -202,6 +202,22 @@ class Homestead
       end
     end
 
+    # Install Crystal If Necessary
+    if settings.has_key?("crystal") && settings["crystal"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Crystal & Lucky"
+            s.path = script_dir + "/install-crystal.sh"
+        end
+    end
+
+    # Install Zend Z-Ray If Necessary
+    if settings.has_key?("zray") && settings["zray"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Zend Z-Ray"
+            s.path = script_dir + "/install-zray.sh"
+        end
+    end
+
     # Install All The Configured Nginx Sites
     config.vm.provision 'shell' do |s|
       s.path = script_dir + '/clear-nginx.sh'
@@ -379,6 +395,22 @@ class Homestead
       end
     end
 
+    # Install Docker-CE If Necessary
+    if settings.has_key?("docker") && settings["docker"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Docker-CE"
+            s.path = script_dir + "/install-docker-ce.sh"
+        end
+    end
+
+    # Install DotNetCore If Necessary
+    if settings.has_key?("dotnetcore") && settings["dotnetcore"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing DotNet Core"
+            s.path = script_dir + "/install-dotnet-core.sh"
+        end
+    end
+
     # Install Elasticsearch If Necessary
     if settings.has_key?('elasticsearch') && settings['elasticsearch']
       config.vm.provision 'shell' do |s|
@@ -386,6 +418,21 @@ class Homestead
         s.path = script_dir + '/install-elasticsearch.sh'
         s.args = settings['elasticsearch']
       end
+    end
+
+    # Install Go If Necessary
+    if settings.has_key?("golang") && settings["golang"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Go"
+            s.path = script_dir + "/install-golang.sh"
+        end
+    end
+
+    # Install InfluxDB if Necessary
+    if settings.has_key?('influxdb') && settings['influxdb']
+        config.vm.provision 'shell' do |s|
+            s.path = script_dir + '/install-influxdb.sh'
+        end
     end
 
     # Install MariaDB If Necessary
@@ -423,11 +470,28 @@ class Homestead
       end
     end
 
-    # Install InfluxDB if Necessary
-    if settings.has_key?('influxdb') && settings['influxdb']
-      config.vm.provision 'shell' do |s|
-        s.path = script_dir + '/install-influxdb.sh'
-      end
+    # Install Oh-My-Zsh If Necessary
+    if settings.has_key?("ohmyzsh") && settings["ohmyzsh"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Oh-My-Zsh"
+            s.path = script_dir + "/install-ohmyzsh.sh"
+        end
+    end
+
+    # Install Ruby & Rails If Necessary
+    if settings.has_key?("ruby") && settings["ruby"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing Ruby & Rails"
+            s.path = script_dir + "/install-ruby.sh"
+        end
+    end
+
+    # Install WebDriver & Dusk Utils If Necessary
+    if settings.has_key?("webdriver") && settings["webdriver"]
+        config.vm.provision "shell" do |s|
+            s.name = "Installing WebDriver Utilities"
+            s.path = script_dir + "/install-webdriver.sh"
+        end
     end
 
     # Configure All Of The Configured Databases
