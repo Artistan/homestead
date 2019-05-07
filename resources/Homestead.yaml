@@ -5,6 +5,7 @@ ip: "192.168.10.10"
 memory: 2048
 cpus: 1
 provider: virtualbox
+ohmyzsh: 1
 
 variables:
     - key: APP_ENV
