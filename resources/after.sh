@@ -14,7 +14,7 @@ mcrypt="1.0.2"
 blitz="0.10.4-PHP7"
 
 # vagrant user zsh plugins enabled ... git, laravel, directory cycle, npm and rsync
-sudo chsh -s /usr/bin/zsh vagrant
+# sudo chsh -s /usr/bin/zsh vagrant
 sudo sed -i "s/plugins=(git)/plugins=(git laravel5 dircycle npm rsync)/" ~/.zshrc
 
 # symlink php to bin/php
