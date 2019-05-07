@@ -8,8 +8,8 @@
 # to apply, you may also create user-customizations.sh,
 # which will be run after this script.
 
-version="7.2"
-extensions="/usr/lib/php/20170718"
+version="7.3"
+extensions="/usr/lib/php/20180731"
 mcrypt="1.0.2"
 blitz="0.10.4-PHP7"
 
