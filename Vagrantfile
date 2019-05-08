@@ -28,6 +28,12 @@ Vagrant.require_version '>= 2.1.0'
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
+############  temp fix for https://github.com/dotless-de/vagrant-vbguest/pull/3341
+if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+end
+############
+
     # https://github.com/phinze/vagrant-host-shell
     config.vm.provision :host_shell do |host_shell|
         host_shell.inline = './system-before.sh ' + hostname + ' ' + ARGV[0]
