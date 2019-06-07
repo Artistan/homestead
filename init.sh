@@ -7,7 +7,6 @@ else
 fi
 
 cp -i resources/after.sh after.sh
-cp -i resources/privileged-after.sh privileged-after.sh
 cp -i resources/aliases aliases
 cp -i resources/system-destroy.sh system-destroy.sh
 cp -i resources/system-before.sh system-before.sh
